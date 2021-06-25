@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<http:listener-config name="HTTP_49015" doc:name="HTTP Listener config" doc:id="44e1dd5e-28ec-4c6c-90cb-9fc8855750e8" >
+		<http:listener-connection host="0.0.0.0" port="49015" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="855d4fc8-8c6c-42c4-a108-02b69df2b93f" >
+		<jms:active-mq-connection username="${jms.username}" password="${jms.secret}" >
+			<jms:factory-configuration brokerUrl="${jms.host}:${jms.port}" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="eaa3b462-5d3a-4f71-acb9-20e070ade251" file="local-properties.yaml" />
+	<db:config name="crdb_cloud" doc:name="Database Config" doc:id="fcd13453-bdad-4272-a29c-c18a2991be1e" >
+		<db:generic-connection url="jdbc:postgresql://${db.host}:${db.port}/${db.database}?sslmode=require&amp;options=--cluster=${db.cluster}" driverClassName="org.postgresql.Driver" user="${db.user}" password="${db.password}" />
+	</db:config>
+	<salesforce:sfdc-config name="sfdc_config" doc:name="Salesforce Config" doc:id="3f000b54-6c69-47c5-b5ef-6c2f6662759d" >
+		<salesforce:basic-connection username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.securityToken}" />
+	</salesforce:sfdc-config>
+	<sub-flow name="lead-bulk-insert" doc:id="f5b0f778-14e3-4262-9747-8f5b43da27cb" >
+		<logger level="INFO" doc:name="Logger" doc:id="d211e0b7-99b5-4ddb-b9d6-6a484084d435" message="#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;'Attempting to bulk insert into database row(s): ' ++ sizeOf(payload.leads)]"/>
+		<try doc:name="Try" doc:id="aef2250b-bc7b-4dfc-9767-89ebfd8100e6">
+					<db:bulk-insert doc:name="Bulk insert" doc:id="56ea91be-f1ec-4fdd-a013-d6203d2825b9" config-ref="crdb_cloud">
+					<db:bulk-input-parameters><![CDATA[#[payload.leads]]]></db:bulk-input-parameters>
+							<db:sql><![CDATA[INSERT INTO painting.leads(cust_ext_id , lead_status, lead_rating, cust_name, cust_address, cust_phone, cust_email, interest_category, created_by_id,created_dttm_stamp ) VALUES(:cust_ext_id , :lead_status, :lead_rating, :cust_name, :cust_address, :cust_phone, :cust_email, :interest_category, :created_by_id, now())]]></db:sql>
+				</db:bulk-insert>
+				</try>
+		<logger level="INFO" doc:name="Logger" doc:id="e41c7c6d-8454-4ecc-95ef-c6e06d1d23cf" message="Insert Successfull" />
+	</sub-flow>
+	<flow name="snk-mule-leadsync-create-leads" doc:id="adfae9a2-b44d-420e-a342-99a821fe6038">
+		<http:listener doc:name="HTTP_Listener" doc:id="0af41078-355f-45d1-98a9-d6086d9416d1" config-ref="HTTP_49015" path="leads" allowedMethods="POST, GET" />
+		<set-variable value="#[attributes.method as String]" doc:name="action" doc:id="f7da6872-abd8-4122-9ff7-0958959dcd3a" variableName="Action" />
+		<choice doc:name="Choice" doc:id="01c86bbe-0e8a-4110-adb3-1d1f8af47f0d">
+			<when expression="#[vars.Action == 'POST']">
+				<logger level="INFO" doc:name="Logger" doc:id="0be49590-e958-40a0-b0b0-a23557bd047d" message="Method is Post" />
+				<ee:transform doc:name="Transform Message" doc:id="954b468b-dcd6-458f-a13c-a7d8534b35e3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+leads: payload.customer map {
+	cust_ext_id: $.cust_id,
+	lead_status: "New",
+	lead_rating: $.lead_rating,
+	cust_phone: $.phone,
+	cust_email: $.email,
+	interest_category: $.interest,
+	misc: $.comments,
+	created_by_id: $.sourced_by_id,
+	cust_name: $.name."Full Name",
+	cust_address: ($.address.Line1 ++ ',' ++ $.address.Line2 ++ ',' ++ $.address.City ++ ',' ++ $.address.County ++',' ++ 
+	$.address.State ++'-' ++ 
+	$.address.Zip) 
+	}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<flow-ref doc:name="Flow Reference" doc:id="4b790931-4c9f-4662-bc06-6db443365b87" name="lead-bulk-insert" />
+				<set-payload value='"Lead(s) Created"' doc:name="Set Payload" doc:id="4705b189-b915-418b-865f-4e46b7b227cc" />
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="6f04bad1-fb8d-43e6-a789-12014e5c870e" message="Method is get" />
+				<db:select doc:name="Select" doc:id="81306b89-86d0-4e00-8f1e-2d2d8d133316" config-ref="crdb_cloud">
+			<db:sql><![CDATA[select * from leads where lead_status <> 'Closed']]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f82b6c82-d8f9-404c-9856-463a1b780ca0">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="ecf013c0-0f9e-4571-827b-06cac5126bb5" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="snk-mule-leadsync-publishFlow" doc:id="be86a79a-412a-4eee-b47a-492912bfb605" >
+		<http:listener doc:name="HTTP_49015" doc:id="bb2fc7c4-88c6-4ae2-a530-fd7e6ad6848f" config-ref="HTTP_49015" path="/jms"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f45da980-dc36-4c12-a4ea-b7b0e30cf5c0" />
+		<jms:publish doc:name="Publish" doc:id="a82fbd07-97e5-4b71-a03a-9be745f3ebff" config-ref="JMS_Config" destination="leads"/>
+		<set-payload value="#['Message Published, Message :']" doc:name="Set Payload" doc:id="2449bc20-2d61-4211-ad36-514ca8772022" />
+	</flow>
+	<flow name="snk-mule-leadsync-consumeflow" doc:id="2dbed3d0-9a76-4ee5-943c-591a60190ac0" >
+		<jms:listener doc:name="On New Message" doc:id="11357c68-5e82-4245-b23e-c718dddbe6e9" config-ref="JMS_Config" destination="leads" ackMode="MANUAL">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<set-variable value="#[attributes.ackId]" doc:name="Set Variable" doc:id="71b96682-58c0-4003-b055-e62b68fb0ea5" variableName="JMSAckID" />
+		<ee:transform doc:name="Transform Message" doc:id="cd21d7ed-a79c-4614-9bed-379393ea8097" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	leads: payload.root.*customer map ( customer , indexOfCustomer ) -> {
+		cust_ext_id: customer.new_cust_id as String default "",
+		lead_status: "New",
+		lead_rating: "Cold",
+		cust_phone: customer.phone default "",
+		cust_email: customer.email,
+		interest_category: customer.interest default "",
+		misc: customer.comments default "",
+		created_by_id: customer.sourced_by_id default "",
+		cust_name: (customer.name.last_name ++ ', ' ++ customer.name.first_name),
+		cust_address: (((((((customer.address.line1
+default "") ++ ', ' ++ (customer.address.line2 default "")) ++ ', ' ++ customer.address.city) ++ ', ' ++  customer.address."state-province") ++ ', ' ++  customer.address."zip-postal" as String) ++ ', ' ++  (customer.address.district default "")) ++ (customer.address.county default "")) ++ ', ' ++  customer.address.country
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="cd9c63fd-c7de-48ad-9fd8-51712e8af812" message='#[payload]' />
+		<!--   &#45;&#45;salesforce:upsert doc:name="Upsert" doc:id="606ad57c-98ce-46b4-92a3-fb8762ae37ad" config-ref="sfdc_config" objectType="Lead" externalIdFieldName="Email"/ -->
+		<flow-ref doc:name="Flow Reference" doc:id="40bf74d1-5511-4983-9579-096b1d20728b" name="lead-bulk-insert"/>
+		<jms:ack doc:name="Ack" doc:id="093d3df1-28dc-473f-8fa7-a9f061944ef6" ackId="#[vars.JMSAckID]" />
+	</flow>
+</mule>

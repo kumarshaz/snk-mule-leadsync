@@ -1,0 +1,16 @@
+db:
+  host: host
+  port: "31233"
+  user: user
+  password: password
+  database: database
+  cluster: cluster
+jms:
+  host: tcp://localhost
+  port: "61616"
+  username: sdsad
+  secret: dfsd21fdsf
+sfdc:
+  username: username
+  password: password
+  securityToken: apikey

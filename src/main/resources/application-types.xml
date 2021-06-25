@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="leads" format="xml">
+      <types:example format="xml" element="root" location="multiple-leads-sample.xml"/>
+    </types:type>
+    <types:type name="leads-xml" format="xml">
+      <types:example format="xml" element="root" location="multiple-leads-sample.xml"/>
+    </types:type>
+    <types:type name="leads-json" format="json">
+      <types:shape format="weave" example="multiple-lead-sample.json"><![CDATA[%dw 2.0
+
+type leads_json = {|
+  customer: Array<{|    cust_id: String,     lead_rating: String,     name: {|      "Preferred Name": String,       "Full Name": String    |},     address: {|      Line1: String,       Line2: String,       City: String,       State: String,       Zip: String,       County: String    |},     phone: String,     email: String,     interest: String,     comments: String,     sourced_by_id: String  |}>
+|} {"example": "{\\\"customer\\\":[{\\\"cust_id\\\":\\\"123456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"Preferred Name\\\":\\\"Shaz\\\",\\\"Full Name\\\":\\\"Kumar, Shashi N\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Hb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"abc@kumar.com\\\",\\\"interest\\\":\\\"Modern Art\\\",\\\"comments\\\":\\\"Let me know if you make custom order paintings\\\",\\\"sourced_by_id\\\":\\\"GoogleAdsense\\\"},{\\\"cust_id\\\":\\\"223456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"Preferred Name\\\":\\\"Waz\\\",\\\"Full Name\\\":\\\"Black, White\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Gb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"wht@blk.com\\\",\\\"interest\\\":\\\"Historic\\\",\\\"comments\\\":\\\"15th Century\\\",\\\"sourced_by_id\\\":\\\"CallerMarketing\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="leads-bulk-insert-json" format="json">
+      <types:shape format="weave" example="multi-lead-insert-sample.json"><![CDATA[%dw 2.0
+
+type leads_bulk_insert_json = {|
+  leads: Array<{|    cust_ext_id: String,     lead_status: String,     lead_rating: String,     cust_phone: String,     cust_email: String,     interest_category: String,     misc: String,     created_by_id: String,     cust_name: String,     cust_address: String  |}>
+|} {"example": "{\\\"leads\\\":[{\\\"cust_ext_id\\\":\\\"423458\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\",\\\"cust_name\\\":\\\"Double, 1Shashi N\\\",\\\"cust_address\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\"},{\\\"cust_ext_id\\\":\\\"423459\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\",\\\"cust_name\\\":\\\"Double, 2Shashi N\\\",\\\"cust_address\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="leads-xsd" format="xml">
+      <types:shape format="xml-schema" element="root" location="new-lead.xsd"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#bb2fc7c4-88c6-4ae2-a530-fd7e6ad6848f">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="leads-xml"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0af41078-355f-45d1-98a9-d6086d9416d1">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="leads-json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#954b468b-dcd6-458f-a13c-a7d8534b35e3">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="leads-bulk-insert-json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#cd21d7ed-a79c-4614-9bed-379393ea8097">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="leads-bulk-insert-json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

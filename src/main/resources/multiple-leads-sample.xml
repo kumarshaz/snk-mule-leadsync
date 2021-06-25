@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+  <customer>
+    <new_cust_id>123456</new_cust_id>
+    <name>
+      <first_name>Shashi</first_name>
+      <last_name>Kumar</last_name>
+    </name>
+    <address>
+      <line1>St1</line1>
+      <line2>Line2</line2>
+      <city>Line2</city>
+      <state-province>state</state-province>
+      <zip-postal>1234567</zip-postal>
+      <county>Hills</county>
+	  <country>USA</country>
+    </address>
+    <phone>123-123-1234</phone>
+    <email>abc@kumar.com</email>
+    <interest>Modern Art</interest>
+    <comments>Let me know if you make custom order paintings</comments>
+    <sourced_by_id>GoogleAdsense</sourced_by_id>
+  </customer>
+  <customer>
+    <new_cust_id>123456</new_cust_id>
+    <name>
+      <first_name>Shashi</first_name>
+      <last_name>Kumar</last_name>
+    </name>
+    <address>
+      <line1>St1</line1>
+      <city>City</city>
+      <state-province>state</state-province>
+      <zip-postal>1234567</zip-postal>
+      <district>Trial</district>
+	  <country>Canada</country>
+    </address>
+    
+    <email>abc@kumar.com</email>
+    <sourced_by_id>GoogleAdsense</sourced_by_id>
+  </customer>
+ 
+</root>

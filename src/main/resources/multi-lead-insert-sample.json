@@ -1,0 +1,28 @@
+{
+  "leads": [
+    {
+      "cust_ext_id": "423458",
+      "lead_status": "New",
+      "lead_rating": "Hot",
+      "cust_phone": "123-123-1234",
+      "cust_email": "abc@kumar.com",
+      "interest_category": "Modern Art",
+      "misc": "Let me know if you make custom order paintings",
+      "created_by_id": "GoogleAdsense",
+      "cust_name": "Double, 1Shashi N",
+      "cust_address": "St1,Line2,CIty,Hb,State-52345"
+    },
+    {
+      "cust_ext_id": "423459",
+      "lead_status": "New",
+      "lead_rating": "Hot",
+      "cust_phone": "123-123-1234",
+      "cust_email": "abc@kumar.com",
+      "interest_category": "Modern Art",
+      "misc": "Let me know if you make custom order paintings",
+      "created_by_id": "GoogleAdsense",
+      "cust_name": "Double, 2Shashi N",
+      "cust_address": "St1,Line2,CIty,Hb,State-52345"
+    }
+  ]
+}
