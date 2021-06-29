@@ -1,0 +1,45 @@
+{
+	"customer": [{
+			"cust_id": "123456",
+			"lead_rating": "Hot",
+			"name": {
+				"First Name": "Shaz",
+				"Last Name": "Kumar, Shashi N"
+			},
+			"address": {
+				"Line1": "St1",
+				"Line2": "Line2",
+				"City": "Line2",
+				"State": "Line2",
+				"Zip": "Line2",
+				"County": "Hb"
+			},
+			"phone": "123-123-1234",
+			"email": "abc@kumar.com",
+			"interest": "Modern Art",
+			"comments": "Let me know if you make custom order paintings",
+			"sourced_by_id": "GoogleAdsense"
+		},
+		{
+			"cust_id": "223456",
+			"lead_rating": "Hot",
+			"name": {
+				"First Name": "Waz",
+				"Last Name": "Black, White"
+			},
+			"address": {
+				"Line1": "St1",
+				"Line2": "Line2",
+				"City": "Line2",
+				"State": "Line2",
+				"Zip": "Line2",
+				"County": "Gb"
+			},
+			"phone": "123-123-1234",
+			"email": "wht@blk.com",
+			"interest": "Historic",
+			"comments": "15th Century",
+			"sourced_by_id": "CallerMarketing"
+		}
+	]
+}
