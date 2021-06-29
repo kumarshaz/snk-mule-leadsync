@@ -3,8 +3,8 @@
 			"cust_id": "123456",
 			"lead_rating": "Hot",
 			"name": {
-				"Preferred Name": "Shaz",
-				"Full Name": "Kumar, Shashi N"
+				"First Name": "Shaz",
+				"Last Name": "Kumar, Shashi N"
 			},
 			"address": {
 				"Line1": "St1",
@@ -24,8 +24,8 @@
 			"cust_id": "223456",
 			"lead_rating": "Hot",
 			"name": {
-				"Preferred Name": "Waz",
-				"Full Name": "Black, White"
+				"First Name": "Waz",
+				"Last Name": "Black, White"
 			},
 			"address": {
 				"Line1": "St1",

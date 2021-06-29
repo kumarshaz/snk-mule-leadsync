@@ -11,8 +11,8 @@
       <types:shape format="weave" example="multiple-lead-sample.json"><![CDATA[%dw 2.0
 
 type leads_json = {|
-  customer: Array<{|    cust_id: String,     lead_rating: String,     name: {|      "Preferred Name": String,       "Full Name": String    |},     address: {|      Line1: String,       Line2: String,       City: String,       State: String,       Zip: String,       County: String    |},     phone: String,     email: String,     interest: String,     comments: String,     sourced_by_id: String  |}>
-|} {"example": "{\\\"customer\\\":[{\\\"cust_id\\\":\\\"123456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"Preferred Name\\\":\\\"Shaz\\\",\\\"Full Name\\\":\\\"Kumar, Shashi N\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Hb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"abc@kumar.com\\\",\\\"interest\\\":\\\"Modern Art\\\",\\\"comments\\\":\\\"Let me know if you make custom order paintings\\\",\\\"sourced_by_id\\\":\\\"GoogleAdsense\\\"},{\\\"cust_id\\\":\\\"223456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"Preferred Name\\\":\\\"Waz\\\",\\\"Full Name\\\":\\\"Black, White\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Gb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"wht@blk.com\\\",\\\"interest\\\":\\\"Historic\\\",\\\"comments\\\":\\\"15th Century\\\",\\\"sourced_by_id\\\":\\\"CallerMarketing\\\"}]}"}
+  customer: Array<{|    cust_id: String,     lead_rating: String,     name: {|      "First Name": String,       "Last Name": String    |},     address: {|      Line1: String,       Line2: String,       City: String,       State: String,       Zip: String,       County: String    |},     phone: String,     email: String,     interest: String,     comments: String,     sourced_by_id: String  |}>
+|} {"example": "{\\\"customer\\\":[{\\\"cust_id\\\":\\\"123456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"First Name\\\":\\\"Shaz\\\",\\\"Last Name\\\":\\\"Kumar, Shashi N\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Hb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"abc@kumar.com\\\",\\\"interest\\\":\\\"Modern Art\\\",\\\"comments\\\":\\\"Let me know if you make custom order paintings\\\",\\\"sourced_by_id\\\":\\\"GoogleAdsense\\\"},{\\\"cust_id\\\":\\\"223456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"First Name\\\":\\\"Waz\\\",\\\"Last Name\\\":\\\"Black, White\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Gb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"wht@blk.com\\\",\\\"interest\\\":\\\"Historic\\\",\\\"comments\\\":\\\"15th Century\\\",\\\"sourced_by_id\\\":\\\"CallerMarketing\\\"}]}"}
 
 ]]></types:shape>
     </types:type>
@@ -20,13 +20,26 @@ type leads_json = {|
       <types:shape format="weave" example="multi-lead-insert-sample.json"><![CDATA[%dw 2.0
 
 type leads_bulk_insert_json = {|
-  leads: Array<{|    cust_ext_id: String,     lead_status: String,     lead_rating: String,     cust_phone: String,     cust_email: String,     interest_category: String,     misc: String,     created_by_id: String,     cust_name: String,     cust_address: String  |}>
-|} {"example": "{\\\"leads\\\":[{\\\"cust_ext_id\\\":\\\"423458\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\",\\\"cust_name\\\":\\\"Double, 1Shashi N\\\",\\\"cust_address\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\"},{\\\"cust_ext_id\\\":\\\"423459\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\",\\\"cust_name\\\":\\\"Double, 2Shashi N\\\",\\\"cust_address\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\"}]}"}
+  leads: Array<{|    cust_ext_id: String,     lead_status: String,     lead_rating: String,     cust_fname: String,     cust_lname: String,     cust_address_line: String,     cust_address_city: String,     cust_address_state: String,     cust_address_zip: String,     cust_address_county: String,     cust_address_country: String,     cust_phone: String,     cust_email: String,     interest_category: String,     misc: String,     created_by_id: String  |}>
+|} {"example": "{\\\"leads\\\":[{\\\"cust_ext_id\\\":\\\"423458\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_fname\\\":\\\"Double, 1Shashi N\\\",\\\"cust_lname\\\":\\\"Double, 1Shashi N\\\",\\\"cust_address_line\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_city\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_state\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_zip\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_county\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_country\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\"},{\\\"cust_ext_id\\\":\\\"423458\\\",\\\"lead_status\\\":\\\"New\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"cust_phone\\\":\\\"123-123-1234\\\",\\\"cust_email\\\":\\\"abc@kumar.com\\\",\\\"interest_category\\\":\\\"Modern Art\\\",\\\"misc\\\":\\\"Let me know if you make custom order paintings\\\",\\\"created_by_id\\\":\\\"GoogleAdsense\\\",\\\"cust_fname\\\":\\\"Double, 1Shashi N\\\",\\\"cust_lname\\\":\\\"Double, 1Shashi N\\\",\\\"cust_address_line\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_city\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_state\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_zip\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_county\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\",\\\"cust_address_country\\\":\\\"St1,Line2,CIty,Hb,State-52345\\\"}]}"}
 
 ]]></types:shape>
     </types:type>
     <types:type name="leads-xsd" format="xml">
       <types:shape format="xml-schema" element="root" location="new-lead.xsd"/>
+    </types:type>
+    <types:type name="customer-json" format="json">
+      <types:shape format="weave" example="multiple-cust-sample.json"><![CDATA[%dw 2.0
+
+type customer_json = {|
+  customer: Array<{|    cust_id: String,     lead_rating: String,     name: {|      "First Name": String,       "Last Name": String    |},     address: {|      Line1: String,       Line2: String,       City: String,       State: String,       Zip: String,       County: String    |},     phone: String,     email: String,     interest: String,     comments: String,     sourced_by_id: String  |}>
+|} {"example": "{\\\"customer\\\":[{\\\"cust_id\\\":\\\"123456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"First Name\\\":\\\"Shaz\\\",\\\"Last Name\\\":\\\"Kumar, Shashi N\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Hb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"abc@kumar.com\\\",\\\"interest\\\":\\\"Modern Art\\\",\\\"comments\\\":\\\"Let me know if you make custom order paintings\\\",\\\"sourced_by_id\\\":\\\"GoogleAdsense\\\"},{\\\"cust_id\\\":\\\"223456\\\",\\\"lead_rating\\\":\\\"Hot\\\",\\\"name\\\":{\\\"First Name\\\":\\\"Waz\\\",\\\"Last Name\\\":\\\"Black, White\\\"},\\\"address\\\":{\\\"Line1\\\":\\\"St1\\\",\\\"Line2\\\":\\\"Line2\\\",\\\"City\\\":\\\"Line2\\\",\\\"State\\\":\\\"Line2\\\",\\\"Zip\\\":\\\"Line2\\\",\\\"County\\\":\\\"Gb\\\"},\\\"phone\\\":\\\"123-123-1234\\\",\\\"email\\\":\\\"wht@blk.com\\\",\\\"interest\\\":\\\"Historic\\\",\\\"comments\\\":\\\"15th Century\\\",\\\"sourced_by_id\\\":\\\"CallerMarketing\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="lead-update-with-sfdc-id" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
     </types:type>
   </types:catalog>
   <types:enrichment select="#bb2fc7c4-88c6-4ae2-a530-fd7e6ad6848f">
@@ -47,8 +60,13 @@ type leads_bulk_insert_json = {|
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#954b468b-dcd6-458f-a13c-a7d8534b35e3">
+  <types:enrichment select="#cd21d7ed-a79c-4614-9bed-379393ea8097">
     <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="leads-xml"/>
+        </types:message>
+      </types:input-event>
       <types:output-event>
         <types:message>
           <types:payload type="leads-bulk-insert-json"/>
@@ -56,11 +74,34 @@ type leads_bulk_insert_json = {|
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#cd21d7ed-a79c-4614-9bed-379393ea8097">
+  <types:enrichment select="#4b790931-4c9f-4662-bc06-6db443365b87">
     <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="leads-json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#296bdd84-0633-457c-9b3f-f14bc14f7576">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="customer-json"/>
+        </types:message>
+      </types:input-event>
       <types:output-event>
         <types:message>
           <types:payload type="leads-bulk-insert-json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#196f202b-f8cd-4c93-a99e-8dbdd80fd734">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="lead-update-with-sfdc-id"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>
